@@ -1,0 +1,22 @@
+var __interpretation_started_timestamp__;
+var pi = 3.14159265;
+var S;
+var Sold;
+var u;
+var v;
+
+var main = function()
+{
+	__interpretation_started_timestamp__ = Date.now();
+
+	S = brick.sensor(D2).read();
+	v = 50;
+	while (true) {
+		u = S - brick.sensor(D2).read();
+		Sold = brick.sensor(D2).read();
+		brick.motor(M4).setPower(v - u);
+		brick.motor(M3).setPower(v + u);
+		brick.display().addLabel([ u, S ], 100, 100);
+		script.wait(50);
+	}
+}

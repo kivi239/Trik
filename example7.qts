@@ -1,0 +1,12 @@
+var __interpretation_started_timestamp__;
+var pi = 3.14159265;
+
+var main = function()
+{
+	__interpretation_started_timestamp__ = Date.now();
+
+	while (true) {
+		brick.display().addLabel(brick.sensor(A1).read(), 1, 1);
+		script.wait(100);
+	}
+}
