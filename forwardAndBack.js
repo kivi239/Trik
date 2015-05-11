@@ -10,13 +10,13 @@ var main = function()
   var encL = [];
   var encR = [];
   
-  var e3 = brick.encoder("B3");
-  var e4 = brick.encoder("B4");
+  var e3 = brick.encoder("B2");
+  var e4 = brick.encoder("B1");
   e3.reset();
   e4.reset();
 
-  var m3 = brick.motor("M3");
-  var m4 = brick.motor("M4");
+  var m3 = brick.motor("M2");
+  var m4 = brick.motor("M1");
   m3.setPower(50);
   m4.setPower(50);
   
@@ -26,21 +26,22 @@ var main = function()
   while (time < 1600) {
     l = e3.readRawData();
     r = e4.readRawData();
+    print(l + " " + r);
     encL.push(l);
     encR.push(r);
     var diff = l + r;
-    m3.setPower(50 - k * diff);
-    m4.setPower(50 + k * diff);
+    m3.setPower(50 + k * diff);
+    m4.setPower(50 - k * diff);
     script.wait(20);
     time += 20;
   }
-
-  while (l >= 0 && r <= 0) {
+  print("here");
+  while (l <= 0 && r >= 0) {
     l = e3.readRawData();
     r = e4.readRawData();
     var diff = l + r;
-    m3.setPower(-50 - k * diff);
-    m4.setPower(-50 + k * diff);
+    m3.setPower(-50 + k * diff);
+    m4.setPower(-50 - k * diff);
     script.wait(20);
   }
 }
