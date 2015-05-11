@@ -1,6 +1,6 @@
 var __interpretation_started_timestamp__;
 var k = 0.5;
-var k1 = 0;
+var k1 = 1.5;
 var v = 50;
 
 var main = function()
@@ -15,6 +15,10 @@ var main = function()
   sens.detect();
 	
   var oldx = 0;
+  var e3 = brick.encoder("B3");
+  var e4 = brick.encoder("B4");
+  e3.reset();
+  e4.reset();
 
   while (true) {
     left = brick.encoder(B3).readRawData();
@@ -25,7 +29,7 @@ var main = function()
     brick.motor(M3).setPower(v + u);
     brick.motor(M4).setPower(v - u);
     oldx = x;
-    script.wait(30);
+    script.wait(10);
 
   }
 }
