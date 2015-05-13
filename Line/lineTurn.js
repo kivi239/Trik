@@ -2,6 +2,7 @@ var __interpretation_started_timestamp__;
 var k = 0.4;
 var k1 = 1.5;
 var v = 50;
+var kturn = 0.6;
 
 var main = function()
 {
@@ -27,13 +28,28 @@ var main = function()
     left = leftEnc.readRawData();
     right = rightEnc.readRawData();
     x = sens.read()[0];
+    var line = sens.read()[2];
+    if (line < 2) {
+      print("Lost the line :(");
+      print("Last pos: " + oldx);
+      if (oldx > 0) {
+        print("power left: " + oldx * kturn);
+        leftM.setPower(oldx * kturn);
+        rightM.setPower(0);
+      }
+      else {
+        leftM.setPower(0);
+        rightM.setPower(-oldx * kturn);
+      }
+      script.wait(10);
+      continue;
+    } 
     print(x + " : " + oldx)	
     u = k * x + k1 * (x - oldx);
     rightM.setPower(v - u);
     leftM.setPower(v + u);
     oldx = x;
     script.wait(10);
-
   }
-	
+
 }

@@ -2,6 +2,7 @@ var __interpretation_started_timestamp__;
 var k = 0.4;
 var k1 = 1.5;
 var v = 50;
+var kturn = 0.3;
 
 var main = function()
 {
@@ -28,7 +29,17 @@ var main = function()
     right = rightEnc.readRawData();
     x = sens.read()[0];
     var line = sens.read()[2];
-    if (line < 10) {
+    if (line < 2) {
+      print("Lost the line :(");
+      if (x > 0) {
+        leftM.setPower(x * kturn);
+        rightM.setPower(0);
+      }
+      else {
+        leftM.setPower(0);
+        rightM.setPower(-x * kturn);
+      }
+      script.wait(10);
       while (true) {
         leftM.setPower(0);
         rightM.setPower(0);

@@ -1,53 +1,57 @@
 var __interpretation_started_timestamp__;  
 
-var k = 1.0;
-var period = 100;
+var k = 1.5;
+var period = 50;
 
 var main = function()
 {
   __interpretation_started_timestamp__ = Date.now();
   
-  var encL = [];
-  var encR = [];
+  var rightEnc = brick.encoder("B2");
+  var leftEnc = brick.encoder("B1");
   
   var e3 = brick.encoder("B2");
   var e4 = brick.encoder("B1");
-  e3.reset();
-  e4.reset();
-
-  var m3 = brick.motor("M2");
-  var m4 = brick.motor("M1");
-  m3.setPower(50);
-  m4.setPower(50);
   
+  rightEnc.reset();
+  leftEnc.reset();
+
+  var rightM = brick.motor("M2");
+  var leftM = brick.motor("M1");
+  leftM.setPower(50);
+  rightM.setPower(50);
+  
+  while (l >= 0 && r <= 0) {
+    r = rightEnc.readRawData();
+    l = leftEnc.readRawData();
+    var diff = l + r;
+    script.wait(20);
+  }
+
   var time = 0;
   var l = 0;
   var r = 0;
   while (time < 4500) {
-    l = e3.readRawData();
-    r = e4.readRawData();
-    encL.push(l);
-    encR.push(r);
+    r = rightEnc.readRawData();
+    l = leftEnc.readRawData();
     var diff = l + r;
-    print(k * diff);
-    m3.setPower(50 + k * diff);
-    m4.setPower(50 - k * diff);
+    print(diff + " : " + k * diff);
+    rightM.setPower(50 + k * diff);
+    leftM.setPower(50 - k * diff);
     script.wait(period);
     time += period;
   }
 
-  print("\n");
-  while (l <= 0 && r >= 0) {
-    l = e3.readRawData();
-    r = e4.readRawData();
+  while (l >= 0 && r <= 0) {
+    r = rightEnc.readRawData();
+    l = leftEnc.readRawData();
     var diff = l + r;
-    print(l);
     if (l < 200) {
-        m3.setPower(abs(l) * 0.01 * (-50 + k * diff));
-        m4.setPower(abs(l) * 0.01 * (-50 - k * diff));
+      rightM.setPower(l * 0.01 * (-50 + k * diff));
+      leftM.setPower(l * 0.01 * (-50 - k * diff));
     } else {
-        m3.setPower(-50 + k * diff);
-        m4.setPower(-50 - k * diff);
+      rightM.setPower(-50 + k * diff);
+      leftM.setPower(-50 - k * diff);
     }
     script.wait(period);
   }

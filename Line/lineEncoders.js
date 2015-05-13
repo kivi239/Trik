@@ -35,5 +35,4 @@ var main = function()
     script.wait(10);
 
   }
-	
 }
