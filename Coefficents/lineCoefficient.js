@@ -22,7 +22,7 @@ function returnToTheLine(left, right) {
   while (l > left && r < right) {
     l = leftEnc.readRawData();
     r = rightEnc.readRawData();
-    var diff = l + r * c;
+    var diff = (l - left) + (r - right) * c;
     rightM.setPower(-v + K * diff);
     leftM.setPower((-v - K * diff) / c);
     
