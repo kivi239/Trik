@@ -4,6 +4,10 @@ var k1 = 1.8;
 var v = 70;
 var kturn = 0.8;
 
+var period = 50;
+var encPeriod = 400;
+var retPeriod = 10;
+
 function returnToTheLine(left, right) {
   var K = 0.1;
   var v1 = 35;
@@ -29,7 +33,7 @@ function returnToTheLine(left, right) {
     rightM.setPower(-v1 + K * diff);
     leftM.setPower((-v1 - K * diff) / c);
     
-    script.wait(5);
+    script.wait(retPeriod);
   } 
 } 
 
@@ -68,20 +72,24 @@ var main = function()
   var leftM = brick.motor(M1);
 	var rightM = brick.motor(M2);
 
+	var time = 0;
   for (var i = 0; i < 100; i++) { 
     left = leftEnc.readRawData();
     right = rightEnc.readRawData();
-    ls.push(left);
-    rs.push(right);
     x = sens.read()[0];
     u = k * x + k1 * (x - oldx);
     rightM.setPower(v - u);
     leftM.setPower(v + u);
     oldx = x;
-    script.wait(50);
+    script.wait(period);
+    if (time % encPeriod == 0) {
+    	ls.push(left);
+      rs.push(right);
+    }
+    time += period;
   }
 
-  for (var i = 0; i < 100; i++) {
+  while (leftEnc.length > 0) {
     var l = leftEnc.readRawData(), r = rightEnc.readRawData();
     print("now: " + l + ", " + r + "; wanted: " + ls[ls.length - 1] + ", " + rs[rs.length - 1]); 
     print("  now: " + leftEnc.readRawData() + ", " + rightEnc.readRawData() + "; wanted: " + ls[ls.length - 1] + ", " + rs[rs.length - 1]); 
