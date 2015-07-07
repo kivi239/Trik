@@ -6,9 +6,11 @@ var kturn = 0.8;
 var retPeriod = 10;
 
 function move(left, right) {
-  var K = 1;
+  var K = 0.7;
   var v1 = 70;
-  
+  var int = 0;
+  var ci = 0.7;
+
   var leftEnc = brick.encoder("B1");
   var rightEnc = brick.encoder("B2");
 
@@ -21,28 +23,31 @@ function move(left, right) {
   var l = leftEnc.readRawData();  
   var r = rightEnc.readRawData();
   var diffl = l - left;
-  var diffr = right - r;
-  var c = diffl * 1.0 / diffr;
-
-  print("coeff: " + c);
+  var diffr = r - right;
 
   while (l < left && r > right) {
     l = leftEnc.readRawData();
     r = rightEnc.readRawData();
+    //print("now: " + l + ", " + r);
     diffl = left - l;
     diffr = right - r;
-    var diff = diffl + diffr * c;
+    var diff = diffl + diffr;
 
-    rightM.setPower((v1 - K * diff) / c);
-    leftM.setPower(v1 + K * diff);
+    int += ci * diff;
+    var u = K * diff + int;
+    //print("control: " + u);
+    rightM.setPower(v1 - u);
+    leftM.setPower(v1 + u);
     
     script.wait(retPeriod);
+    l = leftEnc.readRawData();
+    r = rightEnc.readRawData();
   } 
 
   leftM.setPower(0);
   rightM.setPower(0);
 
-  while (l < left) {
+  /*while (l < left) {
     l = leftEnc.readRawData();
     leftM.setPower(v1 * 0.5);
     script.wait(retPeriod);
@@ -51,7 +56,7 @@ function move(left, right) {
     r = rightEnc.readRawData();
     rightM.setPower(v1 * 0.5);
     script.wait(retPeriod);
-  }
+  } */
 } 
 
 function stop() {
@@ -69,9 +74,6 @@ var main = function()
 {
   __interpretation_started_timestamp__ = Date.now();
 
-  /*var lines = script.readAll("straight.txt");
-  script.writeToFile("test.txt", lines.lenght());
-   */
   var leftEnc = brick.encoder("B1");
   var rightEnc = brick.encoder("B2");
   leftEnc.reset();
@@ -81,41 +83,14 @@ var main = function()
 	var rightM = brick.motor(M2);
 
 
-  var lines = [50, -50, 100, -100, 150, -150, 200, -200, 300, -300, 400, -400, 500, -500, 600, -600, 700, -700];
+  var lines = [50, -50, 100, -100, 150, -150, 200, -200, 300, -300, 400, -400, 500, -500, 600, -600, 700, -700, 800, -800, 900, -900, 950, -950, 1000, -1000, 1100, -1100];
   for (var i = 0; i < lines.length; i += 2) {
-     print("wanted: " + lines[i] + ", " + lines[i + 1]);
+     //print("wanted: " + lines[i] + ", " + lines[i + 1]);
      move(lines[i], lines[i + 1]);
-     print(leftEnc.readRawData(), rightEnc.readRawData());
+     //print(leftEnc.readRawData(), rightEnc.readRawData());
   }
 
   leftM.setPower(0);
   rightM.setPower(0);
 
-    /*var sens = brick.lineSensor("video0");
-  sens.init(true);
-  while (!brick.keys().wasPressed(KeysEnum.Enter)) {
-    script.wait(100);
-  }
-  sens.detect();
-	
-  var oldx = sens.read()[0];
-    while (true) {
-    left = leftEnc.readRawData();
-    right = rightEnc.readRawData();
-    x = sens.read()[0];
-    var line = sens.read()[2];
-    if (line < 2) {
-      
-      k += 0.05;
-      script.wait(1000);
-      returnToTheLine(left, right);
-      print("now k is : " + k);
-    } 
-
-    u = k * x + k1 * (x - oldx);
-    rightM.setPower(v - u);
-    leftM.setPower(v + u);
-    oldx = x;
-    script.wait(10);
-  } */
 }
