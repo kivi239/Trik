@@ -2,16 +2,21 @@ var __interpretation_started_timestamp__;
 var k = 0;
 var k1 = 0;
 var v = 70;
-var kturn = 0;
+var kturn = 0.8;
+var retPeriod = 10;
 
-function returnToTheLine(left, right) {
-  var K = 0.2;
+/*function returnToTheLine(left, right) {
+  var K = 0.4;
+  var v1 = 70;
   
   var leftEnc = brick.encoder("B1");
   var rightEnc = brick.encoder("B2");
 
   var leftM = brick.motor(M1);
 	var rightM = brick.motor(M2);
+
+	leftM.setPower(0);
+	rightM.setPower(0);
 
   var l = leftEnc.readRawData();  
   var r = rightEnc.readRawData();
@@ -22,13 +27,58 @@ function returnToTheLine(left, right) {
   while (l > left && r < right) {
     l = leftEnc.readRawData();
     r = rightEnc.readRawData();
-    var diff = (l - left) + (r - right) * c;
-    rightM.setPower(-v + K * diff);
-    leftM.setPower((-v - K * diff) / c);
+    diffl = l - left;
+    diffr = r - right;
+    var diff = diffl + diffr * c;
+
+    rightM.setPower((-v1 + K * diff) / c);
+    leftM.setPower((-v1 - K * diff) );
     
-    script.wait(10);
+    script.wait(retPeriod);
   } 
+} */
+
+function moveBack(left, right) {
+  var K = 0.7;
+  var v1 = 70;
+  var int = 0;
+  var ci = 0.7;
+
+  var leftEnc = brick.encoder("B1");
+  var rightEnc = brick.encoder("B2");
+
+  var leftM = brick.motor(M1);
+	var rightM = brick.motor(M2);
+
+	leftM.setPower(0);
+	rightM.setPower(0);
+
+  var l = leftEnc.readRawData();  
+  var r = rightEnc.readRawData();
+  var diffl = l - left;
+  var diffr = r - right;
+
+  while (l > left && r < right) {
+    l = leftEnc.readRawData();
+    r = rightEnc.readRawData();
+    diffl = left - l;
+    diffr = right - r;
+    var diff = diffl + diffr;
+
+    int += ci * diff;
+    var u = K * diff + int;
+    rightM.setPower(-v1 + u);
+    leftM.setPower(-v1 - u);
+    
+    script.wait(retPeriod);
+    l = leftEnc.readRawData();
+    r = rightEnc.readRawData();
+  } 
+
+  leftM.setPower(0);
+  rightM.setPower(0);
 } 
+
 
 function stop() {
   print("Stopped!");
@@ -65,16 +115,14 @@ var main = function()
     left = leftEnc.readRawData();
     right = rightEnc.readRawData();
     x = sens.read()[0];
-    print("coordinate of line: " + x);
     var line = sens.read()[2];
     if (line < 2) {
-      print("Lost the line :(");
+      k += 0.05;
       script.wait(1000);
       returnToTheLine(left, right);
-      k += 0.05;
       print("now k is : " + k);
     } 
-    //print(x + " : " + oldx)	
+
     u = k * x + k1 * (x - oldx);
     rightM.setPower(v - u);
     leftM.setPower(v + u);
