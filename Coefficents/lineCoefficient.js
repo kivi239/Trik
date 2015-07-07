@@ -119,7 +119,7 @@ var main = function()
     if (line < 2) {
       k += 0.05;
       script.wait(1000);
-      returnToTheLine(left, right);
+      moveBack(left, right);
       print("now k is : " + k);
     } 
 
