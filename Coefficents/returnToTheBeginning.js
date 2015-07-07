@@ -4,19 +4,23 @@ var k1 = 1.8;
 var v = 70;
 var kturn = 0.8;
 
-var period = 50;
+var period = 40;
 var encPeriod = 400;
 var retPeriod = 10;
 
 function returnToTheLine(left, right) {
-  var K = 0.1;
-  var v1 = 35;
+  var K = 0.4;
+  var v1 = 30;
   
   var leftEnc = brick.encoder("B1");
   var rightEnc = brick.encoder("B2");
 
   var leftM = brick.motor(M1);
 	var rightM = brick.motor(M2);
+
+	leftM.setPower(0);
+	rightM.setPower(0);
+	//script.wait(1500);
 
   var l = leftEnc.readRawData();  
   var r = rightEnc.readRawData();
@@ -28,10 +32,14 @@ function returnToTheLine(left, right) {
   while (l > left && r < right) {
     l = leftEnc.readRawData();
     r = rightEnc.readRawData();
-    var diff = l + r * c;
-    print(l + ", " + r);
-    rightM.setPower(-v1 + K * diff);
-    leftM.setPower((-v1 - K * diff) / c);
+    diffl = l - left;
+    diffr = r - right;
+    var diff = diffl + diffr * c;
+
+    print(diffl + ", " + diffr);
+    print("speed: " + (-v + K * diff) / c + ", " + ((-v1 - K * diff)) + " , diff: " + diff);
+    rightM.setPower((-v1 + K * diff) / c);
+    leftM.setPower((-v1 - K * diff) );
     
     script.wait(retPeriod);
   } 
@@ -56,7 +64,7 @@ var main = function()
   sens.init(true);
   while (!brick.keys().wasPressed(KeysEnum.Enter)) {
     script.wait(100);
-  }
+  } 
   sens.detect();
 	
 	var ls = [];
@@ -73,7 +81,7 @@ var main = function()
 	var rightM = brick.motor(M2);
 
 	var time = 0;
-  for (var i = 0; i < 100; i++) { 
+  for (var i = 0; i < 250; i++) { 
     left = leftEnc.readRawData();
     right = rightEnc.readRawData();
     x = sens.read()[0];
@@ -88,13 +96,10 @@ var main = function()
     }
     time += period;
   }
-
-  while (leftEnc.length > 0) {
+  print("finished");
+  while (ls.length > 0) {
     var l = leftEnc.readRawData(), r = rightEnc.readRawData();
     print("now: " + l + ", " + r + "; wanted: " + ls[ls.length - 1] + ", " + rs[rs.length - 1]); 
-    print("  now: " + leftEnc.readRawData() + ", " + rightEnc.readRawData() + "; wanted: " + ls[ls.length - 1] + ", " + rs[rs.length - 1]); 
-    leftM.setPower(0);
-    rightM.setPower(0);
     returnToTheLine(ls[ls.length - 1], rs[rs.length - 1])
     ls.pop();
     rs.pop();

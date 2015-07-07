@@ -9,9 +9,9 @@ var main = function()
 
   var sens = brick.lineSensor("video0");
   sens.init(true);
- /* while (!brick.keys().wasPressed(KeysEnum.Enter)) {
+  while (!brick.keys().wasPressed(KeysEnum.Enter)) {
     script.wait(100);
-  }*/
+  }
   sens.detect();
 	
   var oldx = sens.read()[0];
@@ -27,7 +27,8 @@ var main = function()
     left = leftEnc.readRawData();
     right = rightEnc.readRawData();
     x = sens.read()[0];
-    print(x + " : " + oldx)	
+    //print(x + " : " + oldx)	
+    print(left + ", " + right);
     u = k * x + k1 * (x - oldx);
     rightM.setPower(v - u);
     leftM.setPower(v + u);
