@@ -28,14 +28,12 @@ function move(left, right) {
   while (l < left && r > right) {
     l = leftEnc.readRawData();
     r = rightEnc.readRawData();
-    //print("now: " + l + ", " + r);
     diffl = left - l;
     diffr = right - r;
     var diff = diffl + diffr;
 
     int += ci * diff;
     var u = K * diff + int;
-    //print("control: " + u);
     rightM.setPower(v1 - u);
     leftM.setPower(v1 + u);
     
@@ -46,17 +44,6 @@ function move(left, right) {
 
   leftM.setPower(0);
   rightM.setPower(0);
-
-  /*while (l < left) {
-    l = leftEnc.readRawData();
-    leftM.setPower(v1 * 0.5);
-    script.wait(retPeriod);
-  }
-  while (r > right) {
-    r = rightEnc.readRawData();
-    rightM.setPower(v1 * 0.5);
-    script.wait(retPeriod);
-  } */
 } 
 
 function stop() {
@@ -85,9 +72,7 @@ var main = function()
 
   var lines = [50, -50, 100, -100, 150, -150, 200, -200, 300, -300, 400, -400, 500, -500, 600, -600, 700, -700, 800, -800, 900, -900, 950, -950, 1000, -1000, 1100, -1100];
   for (var i = 0; i < lines.length; i += 2) {
-     //print("wanted: " + lines[i] + ", " + lines[i + 1]);
      move(lines[i], lines[i + 1]);
-     //print(leftEnc.readRawData(), rightEnc.readRawData());
   }
 
   leftM.setPower(0);
