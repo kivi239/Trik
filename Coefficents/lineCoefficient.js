@@ -39,7 +39,7 @@ var retPeriod = 10;
 } */
 
 function moveBack(left, right) {
-  var K = 0.7;
+  var K = 0.8;
   var v1 = 70;
   var int = 0;
   var ci = 0.7;
