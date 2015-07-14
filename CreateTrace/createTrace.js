@@ -3,7 +3,7 @@ var pi = 3.14159265;
 var u;
 var k = 0.15;
 var ci = 0.03;
-var cd = 0.35;
+var cd = 0.3;
 var v = 30;
 var tV = 40;
 var time = 0;
@@ -38,7 +38,6 @@ var main = function()
 	rightEnc.reset();
 	var l = 0, r = 0;
 	var P = 0, I = 0, D = 0;
-	script.removeFile("scripts/trace1.txt");
 	var x = 0;
 	var oldX = sens.read()[0];
 	while (time < 6000) {
@@ -78,5 +77,6 @@ var main = function()
 	  rArr.push(r);
   }
 
+  script.writeToFile("scripts/trace1.txt", "size = \n" + lArr.length);
   script.writeToFile("scripts/trace1.txt", "lArr = [ " + lArr + "];\nrArr = [ " + rArr + "];\n");
 }
