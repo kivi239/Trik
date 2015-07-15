@@ -29,7 +29,9 @@ var main = function()
 	sens.detect();
 
 	var lArr = [], rArr = [];
-	
+	var uArr = [];
+	var lSpeed = [], rSpeed = [];
+
 	var leftM = brick.motor(M4);
 	var rightM = brick.motor(M3);
 	var leftEnc = brick.encoder(B4);
@@ -45,19 +47,21 @@ var main = function()
 		  print("lost the line!:(");
 		  leftM.setPower(101);
 		  rightM.setPower(101);
-		  if (x > 0)
+		  if (x > 0) {
 		  	leftM.setPower(tV);
-		  else
+		    lSpeed.push(tV);
+		  } else {
 		  	rightM.setPower(tV);
-
+		  	rSpeed.push(tV);
+		  }
 		  script.wait(30);
 		  time += 30;
 		  l = leftEnc.readRawData();
 		  r = rightEnc.readRawData();
-		  //script.writeToFile("scripts/trace1.txt", l + "\n");
-		  //script.writeToFile("scripts/trace1.txt", r + "\n");
-	    lArr.push(l);
+		  
+		  lArr.push(l);
 	    rArr.push(r);
+	    uArr.push(0);
 		}
 		var x = sens.read()[0];
 		print("camera: " + x);
@@ -73,10 +77,16 @@ var main = function()
 		l = leftEnc.readRawData();
 		r = rightEnc.readRawData();
 		oldX = x;
+
 		lArr.push(l);
 	  rArr.push(r);
+	  uArr.push(u);
+	  lSpeed.push(min0(100, v + u));
+	  rSpeed.push(min0(100, v - u));
   }
 
-  script.writeToFile("scripts/trace1.txt", "size = \n" + lArr.length);
-  script.writeToFile("scripts/trace1.txt", "lArr = [ " + lArr + "];\nrArr = [ " + rArr + "];\n");
+  script.writeToFile("scripts/trace1.txt", "size = " + lArr.length + "\n");
+  script.writeToFile("scripts/trace1.txt", "lArr = [" + lArr + "];\nrArr = [" + rArr + "];\n");
+  script.writeToFile("scripts/trace1.txt", "uArr = [" + uArr + "];\n");
+  script.writeToFile("scripts/trace1.txt", "lSpeed = [" + lSpeed + "];\nrSpeed = [" + rSpeed + "];\n");
 }
