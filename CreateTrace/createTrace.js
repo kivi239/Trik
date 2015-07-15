@@ -50,9 +50,11 @@ var main = function()
 		  if (x > 0) {
 		  	leftM.setPower(tV);
 		    lSpeed.push(tV);
+		    rSpeed.push(0);
 		  } else {
 		  	rightM.setPower(tV);
 		  	rSpeed.push(tV);
+		  	lSpeed.push(0);
 		  }
 		  script.wait(30);
 		  time += 30;
