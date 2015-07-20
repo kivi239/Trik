@@ -58,11 +58,11 @@ function move(left, right) {
 
     var u = K * diff + int;
 
-    print("speeds: " + min0(100, v1 - u) + ", ", + min0(100, v1 + u));
+    //print("speeds: " + min0(100, v1 - u) + ", ", + min0(100, v1 + u));
     rightM.setPower(min0(100, v1 - u));
     leftM.setPower(min0(100, v1 + u));
     
-    print(u);
+    //print(u);
     script.wait(retPeriod);
     l = leftEnc.readRawData();
     r = rightEnc.readRawData();
@@ -70,7 +70,7 @@ function move(left, right) {
 
   while (l < left) {
     print("only left");
-	rightM.setPower(0);
+	  rightM.setPower(0);
     if (l - left <= diffEncs)
     	leftM.setPower(sV);
     else
@@ -80,16 +80,14 @@ function move(left, right) {
   } 
   while (r > right) {
     print("only right");
-	leftM.setPower(0);
+	  leftM.setPower(0);
     if (right - r <= diffEncs)
     	rightM.setPower(sV);
-		
     else
       rightM.setPower(v1);
     script.wait(retPeriod);
     r = rightEnc.readRawData();
   } 
-
   //leftM.setPower(0);
   //rightM.setPower(0);
 } 
