@@ -5,7 +5,7 @@ var k = 0.15;
 var ci = 0.03;
 var cd = 0.3;
 var v = 30;
-var tV = 40;
+var tV = 60;
 var time = 0;
 
 function min0(a, b) {
@@ -31,30 +31,38 @@ var main = function()
 	var lArr = [], rArr = [];
 	var uArr = [];
 	var lSpeed = [], rSpeed = [];
+	var timeArr = [];
 
 	var leftM = brick.motor(M4);
 	var rightM = brick.motor(M3);
 	var leftEnc = brick.encoder(B4);
 	var rightEnc = brick.encoder(B3);
+
 	leftEnc.reset();
 	rightEnc.reset();
 	var l = 0, r = 0;
 	var P = 0, I = 0, D = 0;
 	var x = 0;
 	var oldX = sens.read()[0];
-	while (time < 6000) {
+	var t = script.time();
+	while (time < 10000) {
 		while (sens.read()[2] < 5) {
-		  print("lost the line!:(");
+		  //print("lost the line!:(");
+		  var newT = script.time();
+		  timeArr.push(newT - t);
+		  t = newT;
 		  leftM.setPower(101);
 		  rightM.setPower(101);
 		  if (x > 0) {
 		  	leftM.setPower(tV);
 		    lSpeed.push(tV);
 		    rSpeed.push(0);
+		    uArr.push(30);
 		  } else {
 		  	rightM.setPower(tV);
 		  	rSpeed.push(tV);
 		  	lSpeed.push(0);
+		  	uArr.push(-30);
 		  }
 		  script.wait(30);
 		  time += 30;
@@ -63,15 +71,17 @@ var main = function()
 		  
 		  lArr.push(l);
 	    rArr.push(r);
-	    uArr.push(0);
 		}
 		var x = sens.read()[0];
-		print("camera: " + x);
 		P = k * x;
 		I += ci * x;
 		D = cd * (x - oldX);
 		u = P + I + D;
-		print(I + ", " + P + ", " + D);
+		
+		var newT = script.time();
+		timeArr.push(newT - t);
+		t = newT;
+		
 		rightM.setPower(min0(100, v - u));
 		leftM.setPower(min0(100, v + u));
 		script.wait(30);
@@ -82,13 +92,18 @@ var main = function()
 
 		lArr.push(l);
 	  rArr.push(r);
-	  uArr.push(u);
+	  uArr.push(u);                                                    
 	  lSpeed.push(min0(100, v + u));
 	  rSpeed.push(min0(100, v - u));
   }
+
+  timeArr.push(script.time() - t);
+  leftM.setPower(101);
+  rightM.setPower(101);
 
   script.writeToFile("scripts/trace1.txt", "size = " + lArr.length + "\n");
   script.writeToFile("scripts/trace1.txt", "lArr = [" + lArr + "];\nrArr = [" + rArr + "];\n");
   script.writeToFile("scripts/trace1.txt", "uArr = [" + uArr + "];\n");
   script.writeToFile("scripts/trace1.txt", "lSpeed = [" + lSpeed + "];\nrSpeed = [" + rSpeed + "];\n");
+  script.writeToFile("scripts/trace1.txt", "timeArr = [" + timeArr + "]\n\n");
 }
