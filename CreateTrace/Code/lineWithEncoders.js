@@ -68,10 +68,9 @@ function move(left, right) {
     r = rightEnc.readRawData();
   }
 
-  leftM.setPower(0);
-  rightM.setPower(0);
   while (l < left) {
     print("only left");
+	rightM.setPower(0);
     if (l - left <= diffEncs)
     	leftM.setPower(sV);
     else
@@ -81,8 +80,10 @@ function move(left, right) {
   } 
   while (r > right) {
     print("only right");
+	leftM.setPower(0);
     if (right - r <= diffEncs)
     	rightM.setPower(sV);
+		
     else
       rightM.setPower(v1);
     script.wait(retPeriod);
