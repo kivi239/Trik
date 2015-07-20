@@ -7,6 +7,8 @@ var retPeriod = 30;
 var diffEncs = 30;	
 var leftArr = [];
 var rightArr = [];
+var timeArr = [];
+var t0;
 
 function min0(a, b) {
   if (a < 0 || b < 0)
@@ -64,6 +66,7 @@ function move(left, right) {
     r = rightEnc.readRawData();
     leftArr.push(l);
     rightArr.push(r);
+    timeArr.push(script.time() - t0);
   }
 
   while (l < left) {
@@ -76,6 +79,7 @@ function move(left, right) {
     l = leftEnc.readRawData();
     leftArr.push(l);
     rightArr.push(rightEnc.readRawData());
+    timeArr.push(script.time() - t0);
   } 
   while (r > right) {
 	  leftM.setPower(0);
@@ -87,6 +91,7 @@ function move(left, right) {
     r = rightEnc.readRawData();
     rightArr.push(r);
     leftArr.push(leftEnc.readRawData());
+    timeArr.push(script.time() - t0);
   } 
   //leftM.setPower(0);
   //rightM.setPower(0);
@@ -173,6 +178,7 @@ var main = function()
   //var lArr = [2000];
   //var rArr = [-2000];
 
+  t0 = script.time();
   for (var i = 0; i < lArr.length; i += 7) {
     move(lArr[i], rArr[i]);
   } 
@@ -180,6 +186,8 @@ var main = function()
   script.writeToFile("scripts/result_encoders.txt", "size = " + leftArr.length + '\n');
   script.writeToFile("scripts/result_encoders.txt", "leftArr = [" + leftArr + "]\n");
   script.writeToFile("scripts/result_encoders.txt", "rightArr = [" + rightArr + "]\n");
+  script.writeToFile("scripts/result_encoders.txt", "timeArr = [" + timeArr + "]\n");
+
 
   leftM.setPower(101);
   rightM.setPower(101);
