@@ -1,0 +1,2 @@
+with camera: 17993
+with encoders: 10545
