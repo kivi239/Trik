@@ -72,12 +72,12 @@ int main()
 	}
 
 	freopen("super_opt_encoders.txt", "w", stdout);
-	printf("leftArr = [");
+	printf("var lArr = [");
 	for (int i = 0; i < size; i++)
 		printf((i ==  size - 1  ? "%.5lf" : "%.5lf, "), leftArr[i]);
 	printf("]\n");
 
-	printf("rightArr = [");
+	printf("var rArr = [");
 	for (int i = 0; i < size; i++)
 		printf((i == size - 1 ? "%.5lf" : "%.5lf, "), rightArr[i]);
 	printf("]\n");
