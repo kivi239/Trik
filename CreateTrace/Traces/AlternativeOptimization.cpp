@@ -25,34 +25,35 @@ int main()
 
 	for (int i = 0; i < size; i++)
 	{
-		for (int j = i + 2; j < i + 25 && j < size; j++)
+		for (int j = min(size, i + 25); j > i; j--)
 			if ((((diff[i] - diff[j]) < d) && ((diff[i] - diff[j]) > 0)) || (((-diff[i] + diff[j]) < d) && ((diff[i] - diff[j]) < 0)))
 			{
-				double tmp1 = 0;
-				for (int n = i; n < j; n++)
+				double lengthOfPolygon = 0;
+				for (int k = i; k < j; k++)
 				{
-					tmp1 += sqrt((leftArr[n] - leftArr[n + 1]) * (leftArr[n] - leftArr[n + 1]) + (rightArr[n + 1] - rightArr[n]) * (rightArr[n + 1] - rightArr[n]));
+					lengthOfPolygon += sqrt((leftArr[k] - leftArr[k + 1]) * (leftArr[k] - leftArr[k + 1]) + (rightArr[k + 1] - rightArr[k]) * (rightArr[k + 1] - rightArr[k]));
 				}
 
-				double tmp2 = sqrt((leftArr[i] - leftArr[j]) * (leftArr[i] - leftArr[j]) + (rightArr[i] - rightArr[j]) * (rightArr[i] - rightArr[j]));
+				double lengthOfLine = sqrt((leftArr[i] - leftArr[j]) * (leftArr[i] - leftArr[j]) + (rightArr[i] - rightArr[j]) * (rightArr[i] - rightArr[j]));
 
-				double tmp3 = tmp2  / tmp1;
-				if (tmp3 >= 1)
+				double koef = lengthOfLine  / lengthOfPolygon;
+
+				if (koef >= 1)
 					break;
 
 				double oldL = leftArr[j];
 				double oldR = rightArr[j];
 
-				leftArr[j] = leftArr[j] * tmp3;
-				rightArr[j] = rightArr[j] * tmp3;
+				leftArr[j] = leftArr[j] * koef;
+				rightArr[j] = rightArr[j] * koef;
 
 				double diffL = oldL - leftArr[j];
 				double diffR = oldR - rightArr[j];
 
-				for (int n = j + 1; n < size; n++)
+				for (int k = j + 1; k < size; k++)
 				{
-					leftArr[n] = leftArr[n] - diffL;
-					rightArr[n] = rightArr[n]  - diffR;
+					leftArr[k] = leftArr[k] - diffL;
+					rightArr[k] = rightArr[k]  - diffR;
 				}
 
 				for (int k = i + 1; k < j; k++)
@@ -61,7 +62,7 @@ int main()
 					rightArr[k] = rightArr[i] + (rightArr[j] - rightArr[i]) * (k - i) / (j - i);
 				}
 
-				i = j + 2;
+				i = j + 1;
 
 				break;
 			}
