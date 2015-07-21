@@ -44,8 +44,9 @@ var main = function()
 	var P = 0, I = 0, D = 0;
 	var x = 0;
 	var oldX = sens.read()[0];
+	var t0 = script.time();
 	var t = script.time();
-	while (time < 10000) {
+	while (time < 12000) {
 		while (sens.read()[2] < 5) {
 		  //print("lost the line!:(");
 		  var newT = script.time();
@@ -100,6 +101,8 @@ var main = function()
   timeArr.push(script.time() - t);
   leftM.setPower(101);
   rightM.setPower(101);
+
+  print("all time: " + (script.time() - t0));
 
   script.writeToFile("scripts/trace1.txt", "size = " + lArr.length + "\n");
   script.writeToFile("scripts/trace1.txt", "lArr = [" + lArr + "];\nrArr = [" + rArr + "];\n");
