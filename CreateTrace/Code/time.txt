@@ -1,2 +1,3 @@
 with camera: 17993
 with encoders: 10545
+after optimization: 10518
