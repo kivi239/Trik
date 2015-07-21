@@ -1,3 +1,4 @@
 with camera: 17993
 with encoders: 10545
 after optimization: 10518
+after super optimization: 10587. Smooth turn.
