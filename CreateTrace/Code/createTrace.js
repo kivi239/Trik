@@ -46,7 +46,7 @@ var main = function()
 	var oldX = sens.read()[0];
 	var t0 = script.time();
 	var t = script.time();
-	while (time < 12000) {
+	while (time < 14000) {
 		while (sens.read()[2] < 5) {
 		  //print("lost the line!:(");
 		  var newT = script.time();
