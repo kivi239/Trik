@@ -1,0 +1,5 @@
+with camera:           25502 ms
+with encoders:         17904 ms
+after smoothing:       14521 ms
+after double-opt:      14308 ms
+after super-smoothing: 14022 ms

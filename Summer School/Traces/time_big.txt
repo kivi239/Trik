@@ -1,0 +1,4 @@
+with camera:     82729
+with encoders:   52605
+with opt:        48051
+with double-enc: 46548
