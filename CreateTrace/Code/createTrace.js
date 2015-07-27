@@ -5,7 +5,6 @@ var k = 0.15;
 var ci = 0.03;
 var cd = 0.3;
 var v = 30;
-var tV = 60;
 var time = 0;
 
 function min0(a, b) {
@@ -30,8 +29,10 @@ var main = function()
 
 	var lArr = [], rArr = [];
 	var uArr = [];
-	var lSpeed = [], rSpeed = [];
 	var timeArr = [];
+
+	var us = [];
+	var n = 0;
 
 	var leftM = brick.motor(M4);
 	var rightM = brick.motor(M3);
@@ -46,24 +47,25 @@ var main = function()
 	var oldX = sens.read()[0];
 	var t0 = script.time();
 	var t = script.time();
-	while (time < 14000) {
+	while (time < 50000) {
 		while (sens.read()[2] < 5) {
-		  //print("lost the line!:(");
+		  print("lost the line :(");
 		  var newT = script.time();
 		  timeArr.push(newT - t);
 		  t = newT;
-		  leftM.setPower(101);
-		  rightM.setPower(101);
+
 		  if (x > 0) {
-		  	leftM.setPower(tV);
-		    lSpeed.push(tV);
-		    rSpeed.push(0);
-		    uArr.push(30);
+		  	u = v - 10; 
+		  	us.push(u);
+		  	leftM.setPower(v + us[n]);
+		    rightM.setPower(v - us[n]);
+		    uArr.push(u);
 		  } else {
-		  	rightM.setPower(tV);
-		  	rSpeed.push(tV);
-		  	lSpeed.push(0);
-		  	uArr.push(-30);
+		    u = -v + 10;
+		    us.push(u);
+		    leftM.setPower(v + us[n]);
+		  	rightM.setPower(v - us[n]);
+		  	uArr.push(u);
 		  }
 		  script.wait(30);
 		  time += 30;
@@ -72,19 +74,23 @@ var main = function()
 		  
 		  lArr.push(l);
 	    rArr.push(r);
+	    n++;
 		}
+		
 		var x = sens.read()[0];
 		P = k * x;
 		I += ci * x;
 		D = cd * (x - oldX);
 		u = P + I + D;
+		us.push(u);
 		
 		var newT = script.time();
 		timeArr.push(newT - t);
 		t = newT;
 		
-		rightM.setPower(min0(100, v - u));
-		leftM.setPower(min0(100, v + u));
+		rightM.setPower(min0(100, v - us[n]));
+		leftM.setPower(min0(100, v + us[n]));
+		n++;
 		script.wait(30);
 		time += 30;
 		l = leftEnc.readRawData();
@@ -94,8 +100,6 @@ var main = function()
 		lArr.push(l);
 	  rArr.push(r);
 	  uArr.push(u);                                                    
-	  lSpeed.push(min0(100, v + u));
-	  rSpeed.push(min0(100, v - u));
   }
 
   timeArr.push(script.time() - t);
@@ -107,6 +111,5 @@ var main = function()
   script.writeToFile("scripts/trace1.txt", "size = " + lArr.length + "\n");
   script.writeToFile("scripts/trace1.txt", "lArr = [" + lArr + "];\nrArr = [" + rArr + "];\n");
   script.writeToFile("scripts/trace1.txt", "uArr = [" + uArr + "];\n");
-  script.writeToFile("scripts/trace1.txt", "lSpeed = [" + lSpeed + "];\nrSpeed = [" + rSpeed + "];\n");
   script.writeToFile("scripts/trace1.txt", "timeArr = [" + timeArr + "]\n\n");
 }
